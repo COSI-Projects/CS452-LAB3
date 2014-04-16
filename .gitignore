@@ -20,3 +20,6 @@
 #stuff
 *~
 *.out
+*.swp
+*.trace
+*.blend
