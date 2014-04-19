@@ -24,13 +24,17 @@ char *io_read_file(const char *file) {
 
 	rewind(f);
 
-	if (!(data = malloc(flen))) {
+	if (!(data = malloc(flen+1))) {
 		fputs("Insufficient memory!\n", stderr);
 		return NULL;
 	}
 
 	if (!fread(data, flen, 1, f))
 		goto error;
+
+	fclose(f);
+
+	*(data+flen) = '\0';
 
 	return data;
 

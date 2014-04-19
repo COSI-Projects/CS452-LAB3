@@ -40,7 +40,7 @@ static vertex_t *parse_vertex(char *line) {
 	part = strtok_r(line, " ", &save);
 
 	do {
-		vert->loc[i] = strtof(line, NULL);
+		vert->loc[i++] = strtof(part, NULL);
 	} while ((part = strtok_r(NULL, " ", &save)));
 
 #ifdef DEBUG_PARSE
@@ -69,7 +69,7 @@ static face_t *parse_face(char *line) {
 			face->vertices = realloc(face->vertices, 2*face->_vsize*sizeof(GLuint));
 			face->_vsize *= 2;
 		}
-		face->vertices[i++] = atoi(part);
+		face->vertices[i++] = atoi(part)-1;
 	} while ((part = strtok_r(NULL, " ", &save)));
 
 	face->_nvertex = i;
@@ -182,18 +182,28 @@ GLuint wavefront_get_gl_vertex_buffer(wavefront_obj_t *obj) {
 	return buf;
 }
 
+unsigned wavefront_num_verts(wavefront_obj_t *obj) {
+	int i, n;
+
+	n = 0;
+
+	for (i = 0; i < obj->_nface; ++i)
+		n += obj->faces[i]._nvertex;
+
+	return n;
+}
+
 GLuint wavefront_get_gl_face_buffer(wavefront_obj_t *obj) {
 	GLuint buf;
 	int i, n, nf;
 
-	nf = 0;
+	n = nf = 0;
 
 	glGenBuffers(1, &buf);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buf);
 
-	for (i = 0; i < obj->_nface; ++i)
-		n += obj->faces[i]._nvertex;
+    n = wavefront_num_verts(obj);
 
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, n * sizeof(GLuint), NULL, GL_STATIC_DRAW);
 

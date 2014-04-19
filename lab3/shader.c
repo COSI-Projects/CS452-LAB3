@@ -23,6 +23,7 @@ int shader_load(GLenum type, const char *file, GLuint *id) {
 
 #ifdef DEBUG_GL
 	fprintf(stderr, "Compile %s\n", file);
+	fprintf(stderr, "Shader {\n%s\n}", *((const GLchar **)&data));
 #endif // DEBUG_GL
 
 	free(data);
@@ -45,6 +46,25 @@ int shader_load(GLenum type, const char *file, GLuint *id) {
 	}
 
 	*id = shader;
+
+	return 1;
+}
+
+int shader_link(GLenum vert, GLenum frag, GLuint *program) {
+	GLenum prog;
+	GLint status;
+
+	prog = glCreateProgram();
+
+	glAttachShader(prog, vert);
+	glAttachShader(prog, frag);
+	glLinkProgram(prog);
+
+	glGetProgramiv(prog, GL_LINK_STATUS, &status);
+	if (status == GL_FALSE)
+		return 0;
+
+	*program = prog;
 
 	return 1;
 }

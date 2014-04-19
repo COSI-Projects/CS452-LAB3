@@ -22,6 +22,7 @@ wavefront_obj_t *wavefront_load(const char *);
 int wavefront_parse(wavefront_obj_t *, char *);
 void wavefront_add_vertex(wavefront_obj_t *, vertex_t *);
 void wavefront_add_face(wavefront_obj_t *, face_t *);
+unsigned wavefront_num_verts(wavefront_obj_t *obj);
 GLuint wavefront_get_gl_vertex_buffer(wavefront_obj_t *);
 GLuint wavefront_get_gl_face_buffer(wavefront_obj_t *);
 
